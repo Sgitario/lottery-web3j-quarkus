@@ -33,8 +33,10 @@ public class LotteryService {
 
 	private Map<String, String> lotteryByOwner = new ConcurrentHashMap<>();
 
-	public BigInteger getBalance(String owner) throws IOException {
-		return web3j.ethGetBalance(lotteryByOwner.get(owner), DefaultBlockParameterName.LATEST).send().getBalance();
+	public BigDecimal getBalance(String owner) throws IOException {
+		BigInteger wei = web3j.ethGetBalance(lotteryByOwner.get(owner), DefaultBlockParameterName.LATEST).send()
+				.getBalance();
+		return Convert.fromWei(wei.toString(), Unit.ETHER);
 	}
 
 	public void join(String owner, String account, BigDecimal ethers) throws Exception {
@@ -54,13 +56,15 @@ public class LotteryService {
 	@SuppressWarnings("unchecked")
 	public List<String> getPlayers(String owner) throws Exception {
 		Lottery lottery = loadContractFromOwner(owner);
-		return lottery.getPlayers().send();
+		List<String> players = lottery.getPlayers().send();
+		return players;
 	}
 
-	public void pickWinner(String owner) throws Exception {
+	public String pickWinner(String owner) throws Exception {
 		Lottery lottery = loadContractFromOwner(owner);
 		lottery.pickWinner().send();
 		lotteryByOwner.remove(owner);
+		return lottery.getWinner().send();
 	}
 
 	private Lottery loadContractFromOwner(String owner) {

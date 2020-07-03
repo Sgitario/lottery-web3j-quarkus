@@ -23,8 +23,8 @@ public class GanacheTestResource implements QuarkusTestResourceLifecycleManager 
 
 	@SuppressWarnings("resource")
 	public GanacheTestResource() {
-		resource = new GenericContainer<>("trufflesuite/ganache-cli").withExposedPorts(PORT).withCommand("--accounts")
-				.withLogConsumer(new Slf4jLogConsumer(LOGGER))
+		resource = new GenericContainer<>("trufflesuite/ganache-cli").withExposedPorts(PORT)
+				.withCommand("--accounts 10").withLogConsumer(new Slf4jLogConsumer(LOGGER))
 				.waitingFor(Wait.forLogMessage(".*Listening on 0.0.0.0.*", 1));
 	}
 

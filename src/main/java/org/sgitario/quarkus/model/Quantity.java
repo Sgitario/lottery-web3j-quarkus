@@ -2,17 +2,8 @@ package org.sgitario.quarkus.model;
 
 import java.math.BigDecimal;
 
-public class Player {
-	private String address;
+public class Quantity {
 	private BigDecimal ethers;
-
-	public String getAddress() {
-		return address;
-	}
-
-	public void setAddress(String address) {
-		this.address = address;
-	}
 
 	public BigDecimal getEthers() {
 		return ethers;

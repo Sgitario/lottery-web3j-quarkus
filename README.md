@@ -18,7 +18,6 @@
 ```
 
 # Tasks:
-- Add Integration Tests
 - Web3j Extension
 - Native mode
 - Web
