@@ -11,8 +11,6 @@ import io.quarkus.arc.config.ConfigProperties;
 public class LotteryProperties {
 	private BigInteger gasPrice;
 	private BigInteger gasLimit;
-	private String ownerAddress;
-	private String contractAddress;
 
 	public BigInteger getGasLimit() {
 		return gasLimit;
@@ -28,22 +26,6 @@ public class LotteryProperties {
 
 	public void setGasPrice(BigInteger gasPrice) {
 		this.gasPrice = gasPrice;
-	}
-
-	public String getOwnerAddress() {
-		return ownerAddress;
-	}
-
-	public void setOwnerAddress(String ownerAddress) {
-		this.ownerAddress = ownerAddress;
-	}
-
-	public String getContractAddress() {
-		return contractAddress;
-	}
-
-	public void setContractAddress(String contractAddress) {
-		this.contractAddress = contractAddress;
 	}
 
 	@Transient

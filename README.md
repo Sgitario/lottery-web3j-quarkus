@@ -20,7 +20,6 @@
 # Tasks:
 - Add Integration Tests
 - Web3j Extension
-- Integrate web3j-maven-plugin
 - Native mode
 - Web
 - Write Post

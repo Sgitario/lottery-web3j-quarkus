@@ -4,9 +4,10 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.jboss.logging.Logger;
@@ -20,9 +21,6 @@ import org.web3j.tx.TransactionManager;
 import org.web3j.utils.Convert;
 import org.web3j.utils.Convert.Unit;
 
-import io.quarkus.runtime.LaunchMode;
-import io.quarkus.runtime.StartupEvent;
-
 @ApplicationScoped
 public class LotteryService {
 
@@ -33,40 +31,44 @@ public class LotteryService {
 	@Inject
 	private LotteryProperties config;
 
-	public BigInteger getBalance() throws IOException {
-		return web3j.ethGetBalance(config.getContractAddress(), DefaultBlockParameterName.LATEST).send().getBalance();
+	private Map<String, String> lotteryByOwner = new ConcurrentHashMap<>();
+
+	public BigInteger getBalance(String owner) throws IOException {
+		return web3j.ethGetBalance(lotteryByOwner.get(owner), DefaultBlockParameterName.LATEST).send().getBalance();
 	}
 
-	public void join(String account, BigDecimal ethers) throws Exception {
-		Lottery lottery = loadContract(account);
+	public void join(String owner, String account, BigDecimal ethers) throws Exception {
+		Lottery lottery = loadContract(owner, account);
 		TransactionReceipt tx = lottery.enter(Convert.toWei(ethers, Unit.ETHER).toBigInteger()).send();
 		tx.getLogs().forEach(LOGGER::info);
 	}
 
+	public String deployLottery(String owner) throws Exception {
+		LOGGER.info("Deploying Lottery...");
+		Lottery contract = Lottery.deploy(web3j, txManager(owner), config.gas()).send();
+		LOGGER.info("Deployed new contract with address: " + contract.getContractAddress());
+		lotteryByOwner.put(owner, contract.getContractAddress());
+		return contract.getContractAddress();
+	}
+
 	@SuppressWarnings("unchecked")
-	public List<String> getPlayers() throws Exception {
-		Lottery lottery = loadContract(config.getOwnerAddress());
+	public List<String> getPlayers(String owner) throws Exception {
+		Lottery lottery = loadContractFromOwner(owner);
 		return lottery.getPlayers().send();
 	}
 
-	public void pickWinner() throws Exception {
-		Lottery lottery = loadContract(config.getOwnerAddress());
+	public void pickWinner(String owner) throws Exception {
+		Lottery lottery = loadContractFromOwner(owner);
 		lottery.pickWinner().send();
+		lotteryByOwner.remove(owner);
 	}
 
-	private Lottery loadContract(String accountAddress) {
-		return Lottery.load(config.getContractAddress(), web3j, txManager(accountAddress), config.gas());
+	private Lottery loadContractFromOwner(String owner) {
+		return loadContract(owner, owner);
 	}
 
-	void onStart(@Observes StartupEvent ev) throws Exception {
-		if (LaunchMode.current() == LaunchMode.DEVELOPMENT) {
-			LOGGER.info("Deploying Lottery...");
-			Lottery contract = Lottery.deploy(web3j, txManager(config.getOwnerAddress()), config.gas()).send();
-			LOGGER.info("Deployed new contract with address: " + contract.getContractAddress());
-			config.setContractAddress(contract.getContractAddress());
-		} else if (config.getContractAddress() == null) {
-			throw new RuntimeException("Contract Address is mandatory in production mode");
-		}
+	private Lottery loadContract(String owner, String accountAddress) {
+		return Lottery.load(lotteryByOwner.get(owner), web3j, txManager(accountAddress), config.gas());
 	}
 
 	private TransactionManager txManager(String address) {

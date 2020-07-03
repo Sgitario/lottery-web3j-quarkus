@@ -7,13 +7,11 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.http.HttpService;
 
-import okhttp3.OkHttpClient;
-
 @Dependent
 public class Web3jConfiguration {
 
 	@Produces
 	public Web3j web3j(@ConfigProperty(name = "web3j.client-address") String clientAddress) {
-		return Web3j.build(new HttpService(clientAddress, new OkHttpClient.Builder().build()));
+		return Web3j.build(new HttpService(clientAddress));
 	}
 }

@@ -1,13 +1,14 @@
 package org.sgitario.quarkus;
 
-import java.io.IOException;
 import java.math.BigInteger;
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
@@ -19,21 +20,27 @@ public class OwnerResource {
 	@Inject
 	private LotteryService service;
 
-	@GET
-	@Path("/balance")
-	public BigInteger getBalance() throws IOException {
-		return service.getBalance();
+	@POST
+	@Path("/{owner}/deploy")
+	public String deploy(@PathParam("owner") String owner) throws Exception {
+		return service.deployLottery(owner);
 	}
 
 	@GET
-	@Path("/players")
-	public List<String> getPlayers() throws Exception {
-		return service.getPlayers();
+	@Path("/{owner}/balance")
+	public BigInteger getBalance(@PathParam("owner") String owner) throws Exception {
+		return service.getBalance(owner);
 	}
 
 	@GET
-	@Path("/pickWinner")
-	public void pickWinner() throws Exception {
-		service.pickWinner();
+	@Path("/{owner}/players")
+	public List<String> getPlayers(@PathParam("owner") String owner) throws Exception {
+		return service.getPlayers(owner);
+	}
+
+	@GET
+	@Path("/{owner}/pickWinner")
+	public void pickWinner(@PathParam("owner") String owner) throws Exception {
+		service.pickWinner(owner);
 	}
 }
