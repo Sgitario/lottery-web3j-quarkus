@@ -1,0 +1,6 @@
+---
+metadata: {}
+group-id: "org.sgitario.quarkus"
+artifact-id: "quarkus-web3j-client"
+version: "1.0-SNAPSHOT"
+name: "Web3j Client Extension - Runtime"

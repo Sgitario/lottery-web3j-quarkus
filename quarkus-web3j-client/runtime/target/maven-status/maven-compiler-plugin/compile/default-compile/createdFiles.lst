@@ -1,0 +1,5 @@
+META-INF/quarkus-javadoc.properties
+META-INF/quarkus-config-roots.list
+org/sgitario/quarkus/web3j/client/runtime/Web3jRecorder.class
+org/sgitario/quarkus/web3j/client/runtime/Web3jConfiguration.class
+org/sgitario/quarkus/web3j/client/runtime/Web3jClientProducer.class

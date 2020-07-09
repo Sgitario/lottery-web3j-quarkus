@@ -1,0 +1,19 @@
+[.configuration-legend]
+icon:lock[title=Fixed at build time] Configuration property fixed at build time - All other configuration properties are overridable at runtime
+[.configuration-reference.searchable, cols="80,.^10,.^10"]
+|===
+
+h|[[quarkus-web3j_configuration]]link:#quarkus-web3j_configuration[Configuration property]
+
+h|Type
+h|Default
+
+a| [[quarkus-web3j_quarkus.web3j.url]]`link:#quarkus-web3j_quarkus.web3j.url[quarkus.web3j.url]`
+
+[.description]
+--
+Web3j URL to use.
+--|string 
+|required icon:exclamation-circle[title=Configuration property is required]
+
+|===
