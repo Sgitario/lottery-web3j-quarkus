@@ -59,6 +59,7 @@
       <plugin>
         <groupId>org.web3j</groupId>
         <artifactId>web3j-maven-plugin</artifactId>
+        <version>4.6.5</version>
         <configuration>
           <packageName>org.sgitario.quarkus.model</packageName>
           <nativeJavaType>true</nativeJavaType>
